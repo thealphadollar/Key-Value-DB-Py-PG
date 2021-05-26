@@ -11,10 +11,10 @@ class File:
         self.offset = offset
     
     def _load_next_record(self):
-        """[summary]
+        """Load the next record from the file.
 
         Returns:
-            [type]: [description]
+            Record: Record at the current offset.
         """
         read_bytes = 0
         with open(self.filename, 'rb') as f:
@@ -31,14 +31,14 @@ class File:
                 return main.Record(timestamp, keysize, valuesize, key, value)
     
     def write(self, key, value):
-        """[summary]
+        """Appends a new Record to the file.
 
         Args:
-            key ([type]): [description]
-            value ([type]): [description]
+            key (string): key
+            value (string): value
 
         Returns:
-            [type]: [description]
+            tuple: timestamp, offset after writing, size of the written data
         """
         keysize = len(key)
         valuesize = len(value)
@@ -53,6 +53,15 @@ class File:
         return (timestamp, cur_offset, count)    
     
     def read(self, pos, size):
+        """Read value from the file.
+
+        Args:
+            pos (int): offset of the file to start read from.
+            size (int): number of bytes to read.
+
+        Returns:
+            string: value stored in the record at the provided offset.
+        """
         data = b''
         with open(self.filename, 'rb') as f:
             f.seek(pos, 0)
