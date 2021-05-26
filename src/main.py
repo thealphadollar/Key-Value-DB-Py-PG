@@ -1,5 +1,5 @@
 import struct
-import bitcask_file
+from collections import namedtuple
 
 # TODO: Complete the docstrings, and add more comments
 
@@ -7,6 +7,9 @@ import bitcask_file
 METADATA_STRUCT = '>dqq' # bigendian, double, long long, long long
 METADATA_SIZE = 3 * 8
 ENCODING = 'utf-8'
+Record = namedtuple(
+    'Record', ['timestamp', 'keysize', 'valuesize', 'key', 'value']
+)
 
 def encode(record):
     """encode the record to bytes
@@ -43,7 +46,7 @@ def decode(record_bytes):
         [type]: [description]
     """
     (timestamp, keysize, valuesize) = decode_metadata(record_bytes[:METADATA_SIZE])
-    data_str = decode_metadata[METADATA_SIZE:].decode(ENCODING)
+    data_str = record_bytes[METADATA_SIZE:].decode(ENCODING)
     key = data_str[:keysize]
     value = data_str[keysize:]
-    return bitcask_file.Record(timestamp, keysize, valuesize, key, value)
+    return Record(timestamp, keysize, valuesize, key, value)
