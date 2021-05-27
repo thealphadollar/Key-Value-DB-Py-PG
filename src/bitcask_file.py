@@ -1,10 +1,12 @@
-from os import read
-import uuid
 import time
+import uuid
+from os import read
+
 import main
 
+
 class File:
-    """[summary]
+    """Structure to maintain database file's path and offset.
     """
     def __init__(self, dir, filename=str(uuid.uuid4()), offset=0) -> None:
         self.filename = dir + '/' + filename

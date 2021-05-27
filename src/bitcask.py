@@ -1,5 +1,6 @@
-import bitcask_file
 import os
+
+import bitcask_file
 import keydir
 
 TOMBSTONE_VALUE = 'd49200c8-0a26-4f00-b4f0-7a9dffe0e288'
@@ -7,12 +8,25 @@ TOMBSTONE_VALUE = 'd49200c8-0a26-4f00-b4f0-7a9dffe0e288'
 class BitCask:
     
     def __new__(cls, dir):
+        """Instantiate a new instance of Bitcask if not already exists. Otherwise return existing instance.
+
+        Args:
+            dir (string): directory path for storing database files
+
+        Returns:
+            instance: an instance of BitCask
+        """
         if not hasattr(cls, "_instance"):
             cls._instance = super(BitCask, cls).__new__(cls)
             cls._instance.setup(dir)
         return cls._instance
     
     def setup(self, dir):
+        """Setup BitCask DB in the provided directory.
+
+        Args:
+            dir (string): directory path for storing database files
+        """
         self.dir = dir
         os.makedirs(self.dir, exist_ok=True)
         self.active_file = bitcask_file.File(self.dir)
@@ -21,6 +35,8 @@ class BitCask:
         self.populate_keys()
         
     def populate_keys(self):
+        """Populate in-memory index from existing BitCask storage files in the storage directory.
+        """
         for filename in os.listdir(self.dir):
             with open(f'{self.dir}/{filename}', 'rb') as f:
                 file = bitcask_file.File(self.dir, filename, 0)

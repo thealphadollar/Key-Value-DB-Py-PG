@@ -1,8 +1,6 @@
 import struct
 from collections import namedtuple
 
-# TODO: Complete the docstrings, and add more comments
-
 # https://docs.python.org/3/library/struct.html
 METADATA_STRUCT = '>dqq' # bigendian, double, long long, long long
 METADATA_SIZE = 3 * 8
@@ -25,25 +23,25 @@ def encode(record):
     return metadata + data
 
 def decode_metadata(metadata):
-    """[summary]
+    """decode metadata from the provided metadata bytes.
 
     Args:
-        metadata ([type]): [description]
+        metadata (bytes): metadata bytes read from the BitCask file
 
     Returns:
-        [type]: [description]
+        tuple: timestamp, keysize, and valuesize of the record
     """
     (timestamp, keysize, valuesize) = struct.unpack(METADATA_STRUCT, metadata)
     return (timestamp, keysize, valuesize)
 
 def decode(record_bytes):
-    """[summary]
+    """decode record bytes to Record.
 
     Args:
-        record_bytes ([type]): [description]
+        record_bytes (bytes): record bytes read from the file
 
     Returns:
-        [type]: [description]
+        Record: new record from the decoded bytes
     """
     (timestamp, keysize, valuesize) = decode_metadata(record_bytes[:METADATA_SIZE])
     data_str = record_bytes[METADATA_SIZE:].decode(ENCODING)
